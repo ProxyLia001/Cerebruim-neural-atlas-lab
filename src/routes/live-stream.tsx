@@ -79,7 +79,7 @@ function LiveStream() {
             <div key={c} className="flex items-center gap-2">
               <span className="w-8 font-mono text-xs text-muted-foreground">{c}</span>
               <div className="h-20 flex-1">
-                <ResponsiveContainer>
+                <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={data}><YAxis hide domain={[-80, 160]} /><Line dataKey={c} stroke={`var(--chart-${i + 1})`} dot={false} isAnimationActive={false} strokeWidth={1.4} /></LineChart>
                 </ResponsiveContainer>
               </div>

@@ -82,7 +82,7 @@ function Diagnostics() {
               <h3 className="font-semibold">Seizure detection · spike analysis</h3><Risk score={data.epi} />
             </div>
             <div className="h-56">
-              <ResponsiveContainer><LineChart data={data.eeg}><CartesianGrid stroke="var(--border)" strokeDasharray="3 3" /><XAxis dataKey="t" {...ax} /><YAxis {...ax} /><Tooltip {...tip} /><Line dataKey="v" stroke="var(--chart-1)" dot={false} strokeWidth={1.5} /></LineChart></ResponsiveContainer>
+              <ResponsiveContainer width="100%" height="100%"><LineChart data={data.eeg}><CartesianGrid stroke="var(--border)" strokeDasharray="3 3" /><XAxis dataKey="t" {...ax} /><YAxis {...ax} /><Tooltip {...tip} /><Line dataKey="v" stroke="var(--chart-1)" dot={false} strokeWidth={1.5} /></LineChart></ResponsiveContainer>
             </div>
             <p className="mt-2 text-sm text-muted-foreground">{data.spikes} abnormal discharges detected (&gt;60 µV). Predicted spike probability next 10 s: {(data.epi * 100).toFixed(0)}%.</p>
           </div>
@@ -93,11 +93,11 @@ function Diagnostics() {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="panel">
               <div className="mb-3 flex items-center justify-between"><h3 className="font-semibold">Spectral shift</h3><Risk score={data.alz} /></div>
-              <div className="h-56"><ResponsiveContainer><BarChart data={data.bands}><CartesianGrid stroke="var(--border)" strokeDasharray="3 3" /><XAxis dataKey="b" {...ax} /><YAxis {...ax} /><Tooltip {...tip} /><Bar dataKey="healthy" fill="var(--chart-2)" /><Bar dataKey="patient" fill="var(--chart-1)" /></BarChart></ResponsiveContainer></div>
+              <div className="h-56"><ResponsiveContainer width="100%" height="100%"><BarChart data={data.bands}><CartesianGrid stroke="var(--border)" strokeDasharray="3 3" /><XAxis dataKey="b" {...ax} /><YAxis {...ax} /><Tooltip {...tip} /><Bar dataKey="healthy" fill="var(--chart-2)" /><Bar dataKey="patient" fill="var(--chart-1)" /></BarChart></ResponsiveContainer></div>
             </div>
             <div className="panel">
               <h3 className="mb-3 font-semibold">Cognitive degradation (MMSE proxy)</h3>
-              <div className="h-56"><ResponsiveContainer><AreaChart data={data.cog}><CartesianGrid stroke="var(--border)" strokeDasharray="3 3" /><XAxis dataKey="m" {...ax} /><YAxis domain={[0, 30]} {...ax} /><Tooltip {...tip} /><Area dataKey="score" stroke="var(--chart-1)" fill="var(--chart-1)" fillOpacity={0.25} /></AreaChart></ResponsiveContainer></div>
+              <div className="h-56"><ResponsiveContainer width="100%" height="100%"><AreaChart data={data.cog}><CartesianGrid stroke="var(--border)" strokeDasharray="3 3" /><XAxis dataKey="m" {...ax} /><YAxis domain={[0, 30]} {...ax} /><Tooltip {...tip} /><Area dataKey="score" stroke="var(--chart-1)" fill="var(--chart-1)" fillOpacity={0.25} /></AreaChart></ResponsiveContainer></div>
             </div>
           </div>
           <Metrics m={models.alzheimers.m} />
