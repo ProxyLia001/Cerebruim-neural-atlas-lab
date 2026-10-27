@@ -60,7 +60,7 @@ function Diagnostics() {
     });
     const spikes = eeg.filter((e) => Math.abs(e.v) > 60).length;
     const bands = ["Delta", "Theta", "Alpha", "Beta", "Gamma"].map((b, i) => ({
-      b, healthy: [18, 14, 34, 24, 10][i], patient: Math.max(4, [18, 14, 34, 24, 10][i] + (i < 2 ? 10 : -6) * r()),
+      b, healthy: ([18, 14, 34, 24, 10][i] ?? 0), patient: Math.max(4, ([18, 14, 34, 24, 10][i] ?? 0) + (i < 2 ? 10 : -6) * r()),
     }));
     const cog = Array.from({ length: 12 }, (_, i) => ({ m: `M${i + 1}`, score: Math.round(30 - i * r() * 0.8 - r() * 2) }));
     const mri = { volume: (r() * 40 + 5).toFixed(1), enhancement: (r() * 100).toFixed(0), edema: (r() * 30).toFixed(1), necrosis: r() > 0.5 ? "Present" : "Absent" };

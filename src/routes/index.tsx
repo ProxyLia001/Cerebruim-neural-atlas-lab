@@ -62,11 +62,11 @@ function Ingestion() {
   const owner = s.user?.email ?? "guest";
   const history = s.db.scans.filter((x) => x.owner === owner).slice(0, 6);
 
-  async function handle(f?: File) {
+  async function handle(f?: File): Promise<void> {
     if (!f) return;
     const ext = f.name.split(".").pop()?.toLowerCase() ?? "";
-    if (!["edf", "csv", "txt", "pdf"].includes(ext)) return toast.error("Supported: .edf, .edf+, .csv, .txt, .pdf");
-    if (!s.canUpload) return toast.error(`Free limit of ${FREE_SCAN_LIMIT} scans reached. Redeem a code or upgrade to Pro.`);
+    if (!["edf", "csv", "txt", "pdf"].includes(ext)) { toast.error("Supported: .edf, .edf+, .csv, .txt, .pdf"); return; }
+    if (!s.canUpload) { toast.error(`Free limit of ${FREE_SCAN_LIMIT} scans reached. Redeem a code or upgrade to Pro.`); return; }
     try {
       const p = await parseFile(f);
       setParsed(p);

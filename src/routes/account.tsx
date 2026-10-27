@@ -42,7 +42,7 @@ function Account() {
       <PageHeader title={mode === "in" ? "Sign in" : "Create account"} sub="Optional — save your scan history and research notes." />
       <form className="panel space-y-4" onSubmit={(e) => {
         e.preventDefault();
-        if (pw.length < 6) return toast.error("Password must be at least 6 characters.");
+        if (pw.length < 6) { toast.error("Password must be at least 6 characters."); return; }
         const err = mode === "in" ? s.signIn(email, pw) : s.signUp(email, pw);
         err ? toast.error(err) : toast.success("Welcome to Cerebruim");
       }}>

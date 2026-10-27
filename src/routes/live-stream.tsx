@@ -61,7 +61,7 @@ function LiveStream() {
     );
 
   const last = data[data.length - 1];
-  const hazard = !!last && CH.some((c) => Math.abs(last[c]) > 90);
+  const hazard = !!last && CH.some((c) => Math.abs(last[c] ?? 0) > 90);
 
   return (
     <div>
