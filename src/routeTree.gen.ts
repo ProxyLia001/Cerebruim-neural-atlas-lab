@@ -10,33 +10,115 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as BrainMappingRouteImport } from './routes/brain-mapping'
+import { Route as DiagnosticsRouteImport } from './routes/diagnostics'
+import { Route as LiveStreamRouteImport } from './routes/live-stream'
+import { Route as MelRouteImport } from './routes/mel'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrainMappingRoute = BrainMappingRouteImport.update({
+  id: '/brain-mapping',
+  path: '/brain-mapping',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiagnosticsRoute = DiagnosticsRouteImport.update({
+  id: '/diagnostics',
+  path: '/diagnostics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveStreamRoute = LiveStreamRouteImport.update({
+  id: '/live-stream',
+  path: '/live-stream',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MelRoute = MelRouteImport.update({
+  id: '/mel',
+  path: '/mel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/brain-mapping': typeof BrainMappingRoute
+  '/diagnostics': typeof DiagnosticsRoute
+  '/live-stream': typeof LiveStreamRoute
+  '/mel': typeof MelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/brain-mapping': typeof BrainMappingRoute
+  '/diagnostics': typeof DiagnosticsRoute
+  '/live-stream': typeof LiveStreamRoute
+  '/mel': typeof MelRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/brain-mapping': typeof BrainMappingRoute
+  '/diagnostics': typeof DiagnosticsRoute
+  '/live-stream': typeof LiveStreamRoute
+  '/mel': typeof MelRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/account'
+    | '/admin'
+    | '/brain-mapping'
+    | '/diagnostics'
+    | '/live-stream'
+    | '/mel'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/account'
+    | '/admin'
+    | '/brain-mapping'
+    | '/diagnostics'
+    | '/live-stream'
+    | '/mel'
+  id:
+    | '__root__'
+    | '/'
+    | '/account'
+    | '/admin'
+    | '/brain-mapping'
+    | '/diagnostics'
+    | '/live-stream'
+    | '/mel'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
+  AdminRoute: typeof AdminRoute
+  BrainMappingRoute: typeof BrainMappingRoute
+  DiagnosticsRoute: typeof DiagnosticsRoute
+  LiveStreamRoute: typeof LiveStreamRoute
+  MelRoute: typeof MelRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +130,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brain-mapping': {
+      id: '/brain-mapping'
+      path: '/brain-mapping'
+      fullPath: '/brain-mapping'
+      preLoaderRoute: typeof BrainMappingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diagnostics': {
+      id: '/diagnostics'
+      path: '/diagnostics'
+      fullPath: '/diagnostics'
+      preLoaderRoute: typeof DiagnosticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/live-stream': {
+      id: '/live-stream'
+      path: '/live-stream'
+      fullPath: '/live-stream'
+      preLoaderRoute: typeof LiveStreamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mel': {
+      id: '/mel'
+      path: '/mel'
+      fullPath: '/mel'
+      preLoaderRoute: typeof MelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
+  AdminRoute: AdminRoute,
+  BrainMappingRoute: BrainMappingRoute,
+  DiagnosticsRoute: DiagnosticsRoute,
+  LiveStreamRoute: LiveStreamRoute,
+  MelRoute: MelRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
