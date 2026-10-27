@@ -17,6 +17,7 @@ type DB = {
   session: string | null;
   guestUploads: number;
   guestPro: boolean;
+  pendingAdmins: string[];
 };
 
 const initial: DB = {
@@ -30,6 +31,7 @@ const initial: DB = {
   session: null,
   guestUploads: 0,
   guestPro: false,
+  pendingAdmins: [],
 };
 
 const KEY = "cerebruim-db-v1";
@@ -68,7 +70,7 @@ function useDBState() {
     signUp(email: string, password: string) {
       email = email.trim().toLowerCase();
       if (db.users.some((u) => u.email === email)) return "An account with this email already exists.";
-      update((d) => ({ ...d, session: email, users: [...d.users, { email, password, role: email === CREATOR_EMAIL ? "creator" : "user", pro: d.guestPro || email === CREATOR_EMAIL, createdAt: new Date().toISOString() }] }));
+      update((d) => ({ ...d, session: email, users: [...d.users, { email, password, role: email === CREATOR_EMAIL ? "creator" : (d.pendingAdmins ?? []).includes(email) ? "admin" : "user", pro: d.guestPro || email === CREATOR_EMAIL, createdAt: new Date().toISOString() }] }));
       return null;
     },
     signIn(email: string, password: string) {
@@ -112,9 +114,12 @@ function useDBState() {
       if (user?.role !== "creator") return "Only the Creator can change admins.";
       email = email.trim().toLowerCase();
       if (email === CREATOR_EMAIL) return "The Creator's role can't be changed.";
-      const target = db.users.find((u) => u.email === email);
-      if (!target) return "No registered user with that email.";
-      update((d) => ({ ...d, users: d.users.map((u) => (u.email === email ? { ...u, role: admin ? "admin" : "user" } : u)) }));
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Enter a valid email.";
+      update((d) => ({
+        ...d,
+        pendingAdmins: admin ? Array.from(new Set([...(d.pendingAdmins ?? []), email])) : (d.pendingAdmins ?? []).filter((e) => e !== email),
+        users: d.users.map((u) => (u.email === email ? { ...u, role: admin ? "admin" : "user" } : u)),
+      }));
       return null;
     },
   };
