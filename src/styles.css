@@ -115,3 +115,19 @@
 }
 @utility bg-gradient-primary { background: var(--gradient-primary); }
 @utility shadow-glow { box-shadow: var(--shadow-glow); }
+
+@utility prose-chat {
+  font-size: 0.925rem;
+  line-height: 1.65;
+  & p { margin: 0.5rem 0; }
+  & h1, & h2, & h3 { font-weight: 600; margin: 1rem 0 0.4rem; }
+  & ul { list-style: disc; padding-left: 1.25rem; }
+  & ol { list-style: decimal; padding-left: 1.25rem; }
+  & li { margin: 0.2rem 0; }
+  & strong { color: var(--primary); }
+  & code { font-family: var(--font-mono); background: var(--muted); padding: 0.1rem 0.3rem; border-radius: 0.25rem; }
+  & pre { background: var(--muted); padding: 0.75rem; border-radius: 0.5rem; overflow-x: auto; }
+  & a { color: var(--primary); text-decoration: underline; }
+  & table { width: 100%; border-collapse: collapse; }
+  & th, & td { border: 1px solid var(--border); padding: 0.35rem 0.5rem; }
+}
