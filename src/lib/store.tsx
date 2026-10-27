@@ -53,7 +53,8 @@ function useDBState() {
     if (ready) localStorage.setItem(KEY, JSON.stringify(db));
   }, [db, ready]);
 
-  const user = db.users.find((u) => u.email === db.session) ?? null;
+  const found = db.users.find((u) => u.email === db.session) ?? null;
+  const user: User | null = found && found.email === CREATOR_EMAIL ? { ...found, role: "creator", pro: true } : found;
   const isPro = user ? user.pro || user.role !== "user" : db.guestPro;
   const unlimited = isPro;
   const owner = user?.email ?? "guest";

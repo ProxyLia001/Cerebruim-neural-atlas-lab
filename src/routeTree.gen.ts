@@ -14,8 +14,10 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BrainMappingRouteImport } from './routes/brain-mapping'
 import { Route as DiagnosticsRouteImport } from './routes/diagnostics'
+import { Route as EricRouteImport } from './routes/eric'
 import { Route as LiveStreamRouteImport } from './routes/live-stream'
 import { Route as MelRouteImport } from './routes/mel'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -42,6 +44,11 @@ const DiagnosticsRoute = DiagnosticsRouteImport.update({
   path: '/diagnostics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EricRoute = EricRouteImport.update({
+  id: '/eric',
+  path: '/eric',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LiveStreamRoute = LiveStreamRouteImport.update({
   id: '/live-stream',
   path: '/live-stream',
@@ -52,6 +59,11 @@ const MelRoute = MelRouteImport.update({
   path: '/mel',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,8 +71,10 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/brain-mapping': typeof BrainMappingRoute
   '/diagnostics': typeof DiagnosticsRoute
+  '/eric': typeof EricRoute
   '/live-stream': typeof LiveStreamRoute
   '/mel': typeof MelRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -68,8 +82,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/brain-mapping': typeof BrainMappingRoute
   '/diagnostics': typeof DiagnosticsRoute
+  '/eric': typeof EricRoute
   '/live-stream': typeof LiveStreamRoute
   '/mel': typeof MelRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -78,8 +94,10 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/brain-mapping': typeof BrainMappingRoute
   '/diagnostics': typeof DiagnosticsRoute
+  '/eric': typeof EricRoute
   '/live-stream': typeof LiveStreamRoute
   '/mel': typeof MelRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -89,8 +107,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/brain-mapping'
     | '/diagnostics'
+    | '/eric'
     | '/live-stream'
     | '/mel'
+    | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -98,8 +118,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/brain-mapping'
     | '/diagnostics'
+    | '/eric'
     | '/live-stream'
     | '/mel'
+    | '/api/chat'
   id:
     | '__root__'
     | '/'
@@ -107,8 +129,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/brain-mapping'
     | '/diagnostics'
+    | '/eric'
     | '/live-stream'
     | '/mel'
+    | '/api/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -117,8 +141,10 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   BrainMappingRoute: typeof BrainMappingRoute
   DiagnosticsRoute: typeof DiagnosticsRoute
+  EricRoute: typeof EricRoute
   LiveStreamRoute: typeof LiveStreamRoute
   MelRoute: typeof MelRoute
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiagnosticsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/eric': {
+      id: '/eric'
+      path: '/eric'
+      fullPath: '/eric'
+      preLoaderRoute: typeof EricRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/live-stream': {
       id: '/live-stream'
       path: '/live-stream'
@@ -172,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MelRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -181,8 +221,10 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   BrainMappingRoute: BrainMappingRoute,
   DiagnosticsRoute: DiagnosticsRoute,
+  EricRoute: EricRoute,
   LiveStreamRoute: LiveStreamRoute,
   MelRoute: MelRoute,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
