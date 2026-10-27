@@ -1,64 +1,87 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import { PageHeader } from "@/components/AppShell";
+import brain from "@/assets/brain-real.jpg";
 
 export const Route = createFileRoute("/brain-mapping")({
   head: () => ({
     meta: [
       { title: "Brain Mapping — Cerebruim" },
-      { name: "description", content: "Interactive cortical map of frontal, parietal, temporal and occipital lobes with active pathways." },
+      { name: "description", content: "Touch any part of a realistic human brain to learn its name and what it does." },
       { property: "og:title", content: "Brain Mapping — Cerebruim" },
-      { property: "og:description", content: "Functional neural decoding hub." },
+      { property: "og:description", content: "Interactive realistic brain atlas." },
     ],
   }),
   component: BrainMapping,
 });
 
-const lobes = {
-  frontal: { name: "Frontal lobe", d: "M60,150 C50,80 120,30 200,35 L215,40 L205,150 Z", act: 82, paths: ["Decision-making", "Working memory", "Motor planning", "Language production (Broca)"] },
-  parietal: { name: "Parietal lobe", d: "M215,40 C280,35 330,70 345,120 L215,150 L205,150 Z", act: 64, paths: ["Somatosensory integration", "Spatial attention", "Numerical cognition"] },
-  occipital: { name: "Occipital lobe", d: "M345,120 C370,160 360,210 330,230 L270,190 L215,150 Z", act: 91, paths: ["Visual processing (V1–V4)", "Motion detection (MT)", "Object recognition"] },
-  temporal: { name: "Temporal lobe", d: "M80,180 L205,150 L215,150 L270,190 L330,230 C280,260 160,270 110,235 C85,220 75,200 80,180 Z", act: 57, paths: ["Auditory response (A1)", "Memory encoding (hippocampus)", "Language comprehension (Wernicke)"] },
-} as const;
-type K = keyof typeof lobes;
+// Positions are % of the brain image (lateral view, front facing left).
+type Region = { name: string; def: string; x: number; y: number };
+export const REGIONS: Region[] = [
+  { name: "Prefrontal cortex", def: "The front-most part of the brain that plans, makes decisions, controls impulses and shapes personality.", x: 16, y: 40 },
+  { name: "Frontal lobe", def: "The largest lobe, responsible for reasoning, movement planning, problem-solving and voluntary behaviour.", x: 28, y: 22 },
+  { name: "Broca's area", def: "A region of the left frontal lobe that produces speech and forms grammatical sentences.", x: 29, y: 50 },
+  { name: "Primary motor cortex", def: "A strip of cortex that sends signals to muscles to produce voluntary movement.", x: 44, y: 14 },
+  { name: "Somatosensory cortex", def: "A strip just behind the motor cortex that processes touch, pain, temperature and body position.", x: 55, y: 14 },
+  { name: "Parietal lobe", def: "Integrates sensory information and handles spatial awareness, navigation and numbers.", x: 70, y: 22 },
+  { name: "Occipital lobe", def: "The rear lobe that receives and interprets visual information from the eyes.", x: 86, y: 44 },
+  { name: "Wernicke's area", def: "A region near the back of the temporal lobe that is essential for understanding spoken and written language.", x: 72, y: 50 },
+  { name: "Primary auditory cortex", def: "The part of the temporal lobe that first processes sound, pitch and loudness.", x: 52, y: 46 },
+  { name: "Temporal lobe", def: "The side lobe involved in hearing, memory formation, language and recognising faces.", x: 45, y: 60 },
+  { name: "Cerebellum", def: "The 'little brain' at the back that coordinates balance, posture and smooth, precise movement.", x: 72, y: 72 },
+  { name: "Pons", def: "Part of the brainstem that relays signals between brain regions and helps control breathing and sleep.", x: 54, y: 74 },
+  { name: "Medulla oblongata", def: "The lowest part of the brainstem that controls automatic functions like heartbeat, breathing and blood pressure.", x: 61, y: 88 },
+];
+
+function nearest(x: number, y: number) {
+  let best: Region | null = null, d = Infinity;
+  for (const r of REGIONS) {
+    const dd = Math.hypot((r.x - x) * 1.33, r.y - y);
+    if (dd < d) { d = dd; best = r; }
+  }
+  return d < 22 ? best : null;
+}
 
 function BrainMapping() {
-  const [sel, setSel] = useState<K>("occipital");
-  const l = lobes[sel];
+  const [sel, setSel] = useState<Region | null>(null);
+  const [tap, setTap] = useState<{ x: number; y: number; k: number } | null>(null);
+
+  function onTap(e: MouseEvent<HTMLDivElement>) {
+    const b = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - b.left) / b.width) * 100;
+    const y = ((e.clientY - b.top) / b.height) * 100;
+    const r = nearest(x, y);
+    setSel(r);
+    if (r) setTap({ x, y, k: Date.now() });
+  }
+
   return (
     <div>
-      <PageHeader title="Functional Neural Decoding Hub" sub="Tap a lobe to inspect its active sensory and cognitive pathways." />
-      <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
-        <div className="panel">
-          <svg viewBox="40 20 340 260" className="w-full">
-            {(Object.keys(lobes) as K[]).map((k) => (
-              <path key={k} d={lobes[k].d} onClick={() => setSel(k)}
-                className="cursor-pointer stroke-background transition-all"
-                strokeWidth={3}
-                style={{ fill: `color-mix(in oklab, var(--primary) ${20 + lobes[k].act * 0.6}%, var(--card))`, opacity: sel === k ? 1 : 0.55, filter: sel === k ? "drop-shadow(0 0 10px var(--primary))" : undefined }} />
-            ))}
-            <path d="M180,250 C190,270 200,280 215,280" className="fill-none stroke-muted-foreground" strokeWidth={8} strokeLinecap="round" />
-          </svg>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {(Object.keys(lobes) as K[]).map((k) => (
-              <button key={k} onClick={() => setSel(k)} className={`rounded-full border px-3 py-1 text-xs ${sel === k ? "border-primary bg-accent" : "border-border"}`}>{lobes[k].name}</button>
-            ))}
-          </div>
+      <PageHeader title="Functional Neural Decoding Hub" sub="Touch any part of the brain to see what it is and what it does." />
+      <div className="panel overflow-hidden !p-2 md:!p-4">
+        <div className="relative mx-auto max-w-3xl cursor-crosshair select-none animate-brain-float" onClick={onTap}>
+          <img src={brain} alt="Realistic human brain, side view" width={1280} height={960} className="w-full rounded-lg animate-brain-breathe" draggable={false} />
+          <div className="pointer-events-none absolute inset-0 animate-brain-glow rounded-lg" />
+          {REGIONS.map((r, i) => (
+            <span key={r.name} className="pointer-events-none absolute h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary animate-neuron"
+              style={{ left: `${r.x}%`, top: `${r.y}%`, animationDelay: `${(i * 0.37) % 3}s` }} />
+          ))}
+          {tap && (
+            <span key={tap.k} className="pointer-events-none absolute h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary animate-tap-ring"
+              style={{ left: `${tap.x}%`, top: `${tap.y}%` }} />
+          )}
         </div>
-        <div className="panel">
-          <h2 className="text-xl font-semibold text-gradient">{l.name}</h2>
-          <div className="mt-4 text-xs uppercase tracking-wider text-muted-foreground">Activation index</div>
-          <div className="mt-1 h-2 overflow-hidden rounded-full bg-muted"><div className="h-full bg-gradient-primary" style={{ width: `${l.act}%` }} /></div>
-          <div className="mt-1 font-mono text-sm">{l.act}%</div>
-          <div className="mt-6 text-xs uppercase tracking-wider text-muted-foreground">Active pathways</div>
-          <ul className="mt-2 space-y-2">
-            {l.paths.map((p, i) => (
-              <li key={p} className="flex items-center gap-3 rounded-lg bg-muted/40 p-3 text-sm">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-primary" style={{ animationDelay: `${i * 200}ms` }} />{p}
-              </li>
-            ))}
-          </ul>
-        </div>
+      </div>
+
+      <div className="panel mt-4 min-h-28" aria-live="polite">
+        {sel ? (
+          <>
+            <h2 className="text-xl font-semibold text-gradient">{sel.name}</h2>
+            <p className="mt-2 text-sm leading-relaxed">{sel.def}</p>
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">Tap anywhere on the brain to identify the region.</p>
+        )}
       </div>
     </div>
   );
