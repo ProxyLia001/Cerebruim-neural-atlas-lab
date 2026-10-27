@@ -1,3 +1,4 @@
+import type React from "react";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 export const CREATOR_EMAIL = "abigailjames8221@gmail.com";
@@ -126,7 +127,9 @@ function useDBState() {
 }
 
 type Store = ReturnType<typeof useDBState>;
-const Ctx = createContext<Store | null>(null);
+// Keep one context across hot reloads so the provider and hooks always match.
+const g = globalThis as unknown as { __cerebruimStoreCtx?: React.Context<Store | null> };
+const Ctx = (g.__cerebruimStoreCtx ??= createContext<Store | null>(null));
 export function StoreProvider({ children }: { children: ReactNode }) {
   const s = useDBState();
   return <Ctx.Provider value={s}>{children}</Ctx.Provider>;
