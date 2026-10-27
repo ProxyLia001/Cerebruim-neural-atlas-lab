@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { useStore, FREE_SCAN_LIMIT } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import mark from "@/assets/brain-mark.jpg";
 
 const nav = [
@@ -42,7 +41,7 @@ function Sidebar({ onNav }: { onNav?: () => void }) {
         <div className="mt-3 font-mono text-xs">
           {s.unlimited ? "Uploads: unlimited" : `Uploads Used: ${Math.min(s.used, FREE_SCAN_LIMIT)}/${FREE_SCAN_LIMIT}`}
         </div>
-        {!s.unlimited && <Progress value={(Math.min(s.used, FREE_SCAN_LIMIT) / FREE_SCAN_LIMIT) * 100} className="mt-2 h-1.5" />}
+        {!s.unlimited && <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted"><div className="h-full bg-gradient-primary" style={{ width: `${(Math.min(s.used, FREE_SCAN_LIMIT) / FREE_SCAN_LIMIT) * 100}%` }} /></div>}
       </div>
 
       <nav className="flex flex-col gap-1">
