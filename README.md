@@ -126,7 +126,7 @@ Creator & Developer: Abigail James
 
 Platform: Cloudflare
 
-Live application: Cerebruim — Neural Atlas Lab
+**Live application:** [Cerebruim](https://cerebruim-neural-atlas-lab.pages.dev)
 
 💻 DEVELOPMENT
 
