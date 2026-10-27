@@ -8,3 +8,4 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+- App data (users, roles, gift codes, scans, notes) lives in src/lib/store.tsx via localStorage — demo-only until Lovable Cloud is enabled; swap the store for real auth/DB then.
