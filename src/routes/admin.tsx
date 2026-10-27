@@ -54,7 +54,8 @@ function Admin() {
       </div>
     );
 
-  const admins = s.db.users.filter((u) => u.role === "admin");
+  const registered = new Set(s.db.users.map((u) => u.email));
+  const admins = [...s.db.users.filter((u) => u.role === "admin").map((u) => ({ email: u.email, pending: false })), ...(s.db.pendingAdmins ?? []).filter((e) => !registered.has(e)).map((e) => ({ email: e, pending: true }))];
   return (
     <div>
       <PageHeader title="Creator & Admin Panel" sub={`Signed in as ${role === "creator" ? "Creator" : "Admin"}`} />
@@ -94,7 +95,7 @@ function Admin() {
             {admins.length === 0 && <p className="text-sm text-muted-foreground">No admins yet.</p>}
             {admins.map((a) => (
               <div key={a.email} className="flex items-center justify-between rounded-lg bg-muted/40 p-3 text-sm">
-                {a.email}
+                <span className="truncate">{a.email}{a.pending && <span className="ml-2 text-xs text-warning">invited — becomes admin on sign-up</span>}</span>
                 <Button size="sm" variant="outline" onClick={() => { s.setAdmin(a.email, false); toast.success("Admin revoked"); }}>Revoke</Button>
               </div>
             ))}
