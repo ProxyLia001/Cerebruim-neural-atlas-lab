@@ -11,7 +11,7 @@ export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const key = process.env.LOVABLE_API_KEY;
+        const key = process.env['LOVABLE_API_KEY'];
         if (!key) return new Response("AI is not configured.", { status: 500 });
         const { messages } = (await request.json()) as { messages: UIMessage[] };
         const openai = createOpenAI({
