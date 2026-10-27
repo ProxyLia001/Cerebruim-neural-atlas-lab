@@ -61,7 +61,7 @@ function LiveStream() {
     );
 
   const last = data[data.length - 1];
-  const hazard = alerts[0] && Date.now() - 0 && tick.current - 0 < Infinity && last && CH.some((c) => Math.abs(last[c]) > 90);
+  const hazard = !!last && CH.some((c) => Math.abs(last[c]) > 90);
 
   return (
     <div>
