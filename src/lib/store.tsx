@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
-export const CREATOR_EMAIL = "creator@cerebruim.ai";
+export const CREATOR_EMAIL = "abigailjames8221@gmail.com";
 export const FREE_SCAN_LIMIT = 2;
 
 export type Role = "user" | "admin" | "creator";
@@ -20,7 +20,7 @@ type DB = {
 };
 
 const initial: DB = {
-  users: [{ email: CREATOR_EMAIL, password: "creator123", role: "creator", pro: true, createdAt: new Date().toISOString() }],
+  users: [],
   codes: [
     { code: "JUDGE2026", active: true, uses: 0, note: "Competition judges" },
     { code: "ADMISSIONVIP", active: true, uses: 0, note: "Admissions panel" },
@@ -40,7 +40,12 @@ function useDBState() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) setDb({ ...initial, ...JSON.parse(raw) });
+      if (raw) {
+        const d: DB = { ...initial, ...JSON.parse(raw) };
+        d.users = d.users.filter((u) => u.email !== "creator@cerebruim.ai").map((u) => ({ ...u, role: u.email === CREATOR_EMAIL ? "creator" : u.role === "creator" ? "user" : u.role, pro: u.pro || u.email === CREATOR_EMAIL }));
+        if (d.session === "creator@cerebruim.ai") d.session = null;
+        setDb(d);
+      }
     } catch {}
     setReady(true);
   }, []);
@@ -62,7 +67,7 @@ function useDBState() {
     signUp(email: string, password: string) {
       email = email.trim().toLowerCase();
       if (db.users.some((u) => u.email === email)) return "An account with this email already exists.";
-      update((d) => ({ ...d, session: email, users: [...d.users, { email, password, role: email === CREATOR_EMAIL ? "creator" : "user", pro: d.guestPro, createdAt: new Date().toISOString() }] }));
+      update((d) => ({ ...d, session: email, users: [...d.users, { email, password, role: email === CREATOR_EMAIL ? "creator" : "user", pro: d.guestPro || email === CREATOR_EMAIL, createdAt: new Date().toISOString() }] }));
       return null;
     },
     signIn(email: string, password: string) {
