@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
-import { Menu, X, Home, Microscope, Brain, Zap, Bot, Settings, Lock, UserRound } from "lucide-react";
+import { Menu, X, Home, Microscope, Brain, Zap, Bot, Settings, Lock, UserRound, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useStore, FREE_SCAN_LIMIT } from "@/lib/store";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ const nav = [
   { to: "/diagnostics", label: "Diagnostic Engine", icon: Microscope },
   { to: "/brain-mapping", label: "Brain Mapping", icon: Brain },
   { to: "/live-stream", label: "Live EEG Stream", icon: Zap, pro: true },
+  { to: "/eric", label: "Eric AI Chat", icon: MessageCircle },
   { to: "/mel", label: "MEL Research Assistant", icon: Bot },
   { to: "/admin", label: "Creator & Admin Panel", icon: Settings, restricted: true },
 ] as const;
