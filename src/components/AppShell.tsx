@@ -83,7 +83,7 @@ function Sidebar({ onNav }: { onNav?: () => void }) {
                 <div>Pay by bank transfer to:</div>
                 <div className="font-mono font-semibold">{s.payment.account_number}</div>
                 <div>{s.payment.bank_name} — {s.payment.account_name}</div>
-                <div className="opacity-70">After paying, send proof to get your Pro code.</div>
+                <Link to="/upgrade" onClick={onNav} className="mt-1 inline-block font-semibold text-primary underline">Paid? Submit proof</Link>
               </div>
             )}
           </div>

@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Lock, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useStore, type GiftCode, type Payment } from "@/lib/store";
@@ -69,6 +70,7 @@ function Admin() {
         <TabsList className="mb-4">
           <TabsTrigger value="codes">Gift codes</TabsTrigger>
           {role === "creator" && <TabsTrigger value="admins">Admins</TabsTrigger>}
+          <TabsTrigger value="verify">Verify payments</TabsTrigger>
           {role === "creator" && <TabsTrigger value="payment">Payment details</TabsTrigger>}
         </TabsList>
         <TabsContent value="codes" className="space-y-3">
@@ -102,6 +104,7 @@ function Admin() {
             ))}
           </TabsContent>
         )}
+        <TabsContent value="verify"><PaymentReviews /></TabsContent>
         {role === "creator" && s.payment && (
           <TabsContent value="payment"><PaymentForm initial={s.payment} /></TabsContent>
         )}
@@ -127,9 +130,44 @@ function PaymentForm({ initial }: { initial: Payment }) {
       {f("account_number", "Account number")}
       {f("bank_name", "Bank")}
       {f("account_name", "Account name")}
+      {f("paypal_email", "PayPal email (optional)")}
       {f("monthly_price", "Monthly price ($)", true)}
       {f("yearly_price", "Yearly price ($)", true)}
       <Button type="submit">Save</Button>
     </form>
+  );
+}
+
+type Req = { id: string; email: string; plan: string; method: string; reference: string; amount: number; status: string; created_at: string };
+function PaymentReviews() {
+  const [rows, setRows] = useState<Req[]>([]);
+  const load = async () => {
+    const { data } = await supabase.from("payment_requests").select("*").order("created_at", { ascending: false });
+    setRows((data ?? []) as Req[]);
+  };
+  useEffect(() => { load(); }, []);
+  const review = async (id: string, ok: boolean) => {
+    const { data, error } = await supabase.rpc("review_payment", { _id: id, _approve: ok });
+    const err = error?.message ?? (data as string | null);
+    err ? toast.error(err) : toast.success(ok ? "Payment approved, Pro activated" : "Payment rejected");
+    load();
+  };
+  if (rows.length === 0) return <p className="text-sm text-muted-foreground">No payment submissions yet.</p>;
+  return (
+    <div className="space-y-2">
+      <p className="text-xs text-muted-foreground">Check your OPay / PayPal / bank app for a matching payment and reference before approving.</p>
+      {rows.map((r) => (
+        <div key={r.id} className="flex flex-wrap items-center gap-3 rounded-lg bg-muted/40 p-3 text-sm">
+          <div className="min-w-0 flex-1">
+            <div className="truncate font-semibold">{r.email}</div>
+            <div className="text-xs text-muted-foreground">{r.plan} · ${r.amount} · {r.method} · ref <span className="font-mono">{r.reference}</span></div>
+          </div>
+          {r.status === "pending" ? (
+            <><Button size="sm" onClick={() => review(r.id, true)}>Approve</Button>
+            <Button size="sm" variant="outline" onClick={() => review(r.id, false)}>Reject</Button></>
+          ) : <span className="text-xs font-semibold">{r.status}</span>}
+        </div>
+      ))}
+    </div>
   );
 }

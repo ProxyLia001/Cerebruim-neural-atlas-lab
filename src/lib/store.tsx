@@ -10,7 +10,7 @@ export type User = { id: string; email: string; role: Role; pro: boolean; create
 export type GiftCode = { code: string; active: boolean; uses: number; note: string };
 export type Scan = { id: string; owner: string; name: string; type: string; size: number; at: string };
 export type Note = { id: string; owner: string; text: string; at: string };
-export type Payment = { account_number: string; bank_name: string; account_name: string; monthly_price: number; yearly_price: number };
+export type Payment = { account_number: string; bank_name: string; account_name: string; paypal_email: string; monthly_price: number; yearly_price: number };
 
 type DB = { users: User[]; codes: GiftCode[]; scans: Scan[]; notes: Note[]; pendingAdmins: string[] };
 const empty: DB = { users: [], codes: [], scans: [], notes: [], pendingAdmins: [] };
@@ -46,7 +46,7 @@ function useDBState() {
     const rs = (roles ?? []).map((r) => r.role as Role);
     const role: Role = rs.includes("creator") ? "creator" : rs.includes("admin") ? "admin" : "user";
     const email = (au.email ?? "").toLowerCase();
-    const me: User = { id: au.id, email, role, pro: !!prof?.pro || role !== "user", createdAt: prof?.created_at ?? au.created_at };
+    const me: User = { id: au.id, email, role, pro: (!!prof?.pro && (!prof?.pro_until || new Date(prof.pro_until) > new Date())) || role !== "user", createdAt: prof?.created_at ?? au.created_at };
     setUser(me);
     const staff = role !== "user";
     const [scans, notes, codes, profiles, allRoles, pending] = await Promise.all([
@@ -146,7 +146,7 @@ function useDBState() {
     },
     async savePayment(p: Payment) {
       if (user?.role !== "creator") return "Only the Creator can change payment details.";
-      const { error } = await supabase.from("payment_settings").update({ ...p, updated_at: new Date().toISOString() }).eq("id", 1);
+      const { error } = await supabase.from("payment_settings").update({ account_number: p.account_number, bank_name: p.bank_name, account_name: p.account_name, paypal_email: p.paypal_email, monthly_price: p.monthly_price, yearly_price: p.yearly_price, updated_at: new Date().toISOString() }).eq("id", 1);
       if (error) return error.message;
       await loadPayment();
       return null;
