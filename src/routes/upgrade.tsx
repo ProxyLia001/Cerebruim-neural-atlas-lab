@@ -21,14 +21,14 @@ export const Route = createFileRoute("/upgrade")({
   component: Upgrade,
 });
 
-const METHODS = ["OPay", "Bank transfer", "PayPal", "Other mobile money"];
+const METHODS: string[] = ["OPay", "Bank transfer", "PayPal", "Other mobile money"];
 type Req = { id: string; plan: string; method: string; reference: string; amount: number; status: string; created_at: string };
 
 function Upgrade() {
   const s = useStore();
   const p = s.payment;
   const [plan, setPlan] = useState<"monthly" | "yearly">("monthly");
-  const [method, setMethod] = useState(METHODS[0]);
+  const [method, setMethod] = useState<string>("OPay");
   const [ref, setRef] = useState("");
   const [mine, setMine] = useState<Req[]>([]);
   const load = async () => {
