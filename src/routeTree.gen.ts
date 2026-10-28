@@ -17,6 +17,7 @@ import { Route as DiagnosticsRouteImport } from './routes/diagnostics'
 import { Route as EricRouteImport } from './routes/eric'
 import { Route as LiveStreamRouteImport } from './routes/live-stream'
 import { Route as MelRouteImport } from './routes/mel'
+import { Route as UpgradeRouteImport } from './routes/upgrade'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const IndexRoute = IndexRouteImport.update({
@@ -59,6 +60,11 @@ const MelRoute = MelRouteImport.update({
   path: '/mel',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UpgradeRoute = UpgradeRouteImport.update({
+  id: '/upgrade',
+  path: '/upgrade',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/eric': typeof EricRoute
   '/live-stream': typeof LiveStreamRoute
   '/mel': typeof MelRoute
+  '/upgrade': typeof UpgradeRoute
   '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/eric': typeof EricRoute
   '/live-stream': typeof LiveStreamRoute
   '/mel': typeof MelRoute
+  '/upgrade': typeof UpgradeRoute
   '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesById {
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/eric': typeof EricRoute
   '/live-stream': typeof LiveStreamRoute
   '/mel': typeof MelRoute
+  '/upgrade': typeof UpgradeRoute
   '/api/chat': typeof ApiChatRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/eric'
     | '/live-stream'
     | '/mel'
+    | '/upgrade'
     | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/eric'
     | '/live-stream'
     | '/mel'
+    | '/upgrade'
     | '/api/chat'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/eric'
     | '/live-stream'
     | '/mel'
+    | '/upgrade'
     | '/api/chat'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   EricRoute: typeof EricRoute
   LiveStreamRoute: typeof LiveStreamRoute
   MelRoute: typeof MelRoute
+  UpgradeRoute: typeof UpgradeRoute
   ApiChatRoute: typeof ApiChatRoute
 }
 
@@ -205,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MelRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/upgrade': {
+      id: '/upgrade'
+      path: '/upgrade'
+      fullPath: '/upgrade'
+      preLoaderRoute: typeof UpgradeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
@@ -224,6 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   EricRoute: EricRoute,
   LiveStreamRoute: LiveStreamRoute,
   MelRoute: MelRoute,
+  UpgradeRoute: UpgradeRoute,
   ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
