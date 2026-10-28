@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Lock, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { useStore, type GiftCode } from "@/lib/store";
+import { useStore, type GiftCode, type Payment } from "@/lib/store";
 import { PageHeader, Stat } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +30,7 @@ function CodeRow({ c }: { c: GiftCode }) {
       <Input className="h-8 min-w-0 flex-1" value={note} onChange={(e) => setNote(e.target.value)} onBlur={() => note !== c.note && s.saveCode({ ...c, note }, c.code)} />
       <span className="font-mono text-xs text-muted-foreground">{c.uses} uses</span>
       <Switch checked={c.active} onCheckedChange={(v) => s.saveCode({ ...c, active: v }, c.code)} aria-label="Active" />
-      <button aria-label="Delete code" onClick={() => { s.deleteCode(c.code); toast.success("Code deleted"); }}><Trash2 className="h-4 w-4 text-destructive" /></button>
+      <button aria-label="Delete code" onClick={async () => { await s.deleteCode(c.code); toast.success("Code deleted"); }}><Trash2 className="h-4 w-4 text-destructive" /></button>
     </div>
   );
 }
@@ -69,11 +69,12 @@ function Admin() {
         <TabsList className="mb-4">
           <TabsTrigger value="codes">Gift codes</TabsTrigger>
           {role === "creator" && <TabsTrigger value="admins">Admins</TabsTrigger>}
+          {role === "creator" && <TabsTrigger value="payment">Payment details</TabsTrigger>}
         </TabsList>
         <TabsContent value="codes" className="space-y-3">
-          <form className="panel flex flex-wrap gap-2" onSubmit={(e) => {
+          <form className="panel flex flex-wrap gap-2" onSubmit={async (e) => {
             e.preventDefault();
-            const err = s.saveCode({ code: newCode, note: newNote, active: true, uses: 0 });
+            const err = await s.saveCode({ code: newCode, note: newNote, active: true, uses: 0 });
             err ? toast.error(err) : (toast.success("Code created"), setNewCode(""), setNewNote(""));
           }}>
             <Input className="w-40 font-mono uppercase" placeholder="NEWCODE" value={newCode} onChange={(e) => setNewCode(e.target.value)} />
@@ -84,9 +85,9 @@ function Admin() {
         </TabsContent>
         {role === "creator" && (
           <TabsContent value="admins" className="space-y-3">
-            <form className="panel flex flex-wrap gap-2" onSubmit={(e) => {
+            <form className="panel flex flex-wrap gap-2" onSubmit={async (e) => {
               e.preventDefault();
-              const err = s.setAdmin(adminEmail, true);
+              const err = await s.setAdmin(adminEmail, true);
               err ? toast.error(err) : (toast.success("Admin granted"), setAdminEmail(""));
             }}>
               <Input type="email" className="min-w-0 flex-1" placeholder="user@email.com" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} />
@@ -96,12 +97,39 @@ function Admin() {
             {admins.map((a) => (
               <div key={a.email} className="flex items-center justify-between rounded-lg bg-muted/40 p-3 text-sm">
                 <span className="truncate">{a.email}{a.pending && <span className="ml-2 text-xs text-warning">invited — becomes admin on sign-up</span>}</span>
-                <Button size="sm" variant="outline" onClick={() => { s.setAdmin(a.email, false); toast.success("Admin revoked"); }}>Revoke</Button>
+                <Button size="sm" variant="outline" onClick={async () => { const err = await s.setAdmin(a.email, false); err ? toast.error(err) : toast.success("Admin revoked"); }}>Revoke</Button>
               </div>
             ))}
           </TabsContent>
         )}
+        {role === "creator" && s.payment && (
+          <TabsContent value="payment"><PaymentForm initial={s.payment} /></TabsContent>
+        )}
       </Tabs>
     </div>
+  );
+}
+
+function PaymentForm({ initial }: { initial: Payment }) {
+  const s = useStore();
+  const [p, setP] = useState(initial);
+  const f = (k: keyof Payment, label: string, num = false) => (
+    <label className="block space-y-1 text-sm"><span className="text-muted-foreground">{label}</span>
+      <Input type={num ? "number" : "text"} value={String(p[k])} onChange={(e) => setP({ ...p, [k]: num ? Number(e.target.value) : e.target.value })} />
+    </label>
+  );
+  return (
+    <form className="panel max-w-md space-y-3" onSubmit={async (e) => {
+      e.preventDefault();
+      const err = await s.savePayment(p);
+      err ? toast.error(err) : toast.success("Payment details saved");
+    }}>
+      {f("account_number", "Account number")}
+      {f("bank_name", "Bank")}
+      {f("account_name", "Account name")}
+      {f("monthly_price", "Monthly price ($)", true)}
+      {f("yearly_price", "Yearly price ($)", true)}
+      <Button type="submit">Save</Button>
+    </form>
   );
 }
