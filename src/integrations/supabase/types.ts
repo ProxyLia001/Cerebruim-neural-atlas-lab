@@ -59,6 +59,45 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_requests: {
+        Row: {
+          amount: number
+          created_at: string
+          email: string
+          id: string
+          method: string
+          plan: string
+          reference: string
+          reviewed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          email: string
+          id?: string
+          method: string
+          plan: string
+          reference: string
+          reviewed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          email?: string
+          id?: string
+          method?: string
+          plan?: string
+          reference?: string
+          reviewed_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       payment_settings: {
         Row: {
           account_name: string
@@ -66,6 +105,7 @@ export type Database = {
           bank_name: string
           id: number
           monthly_price: number
+          paypal_email: string
           updated_at: string
           yearly_price: number
         }
@@ -75,6 +115,7 @@ export type Database = {
           bank_name: string
           id?: number
           monthly_price: number
+          paypal_email?: string
           updated_at?: string
           yearly_price: number
         }
@@ -84,6 +125,7 @@ export type Database = {
           bank_name?: string
           id?: number
           monthly_price?: number
+          paypal_email?: string
           updated_at?: string
           yearly_price?: number
         }
@@ -110,18 +152,21 @@ export type Database = {
           email: string
           id: string
           pro: boolean
+          pro_until: string | null
         }
         Insert: {
           created_at?: string
           email: string
           id: string
           pro?: boolean
+          pro_until?: string | null
         }
         Update: {
           created_at?: string
           email?: string
           id?: string
           pro?: boolean
+          pro_until?: string | null
         }
         Relationships: []
       }
@@ -184,6 +229,10 @@ export type Database = {
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       redeem_code: { Args: { _code: string }; Returns: boolean }
+      review_payment: {
+        Args: { _approve: boolean; _id: string }
+        Returns: string
+      }
       set_admin: { Args: { _admin: boolean; _email: string }; Returns: string }
     }
     Enums: {
