@@ -32,18 +32,19 @@ function Account() {
         <div className="panel space-y-3 text-sm">
           <div>Tier: <span className="font-semibold text-gradient">{s.tier}</span></div>
           <div>Scans saved: {s.db.scans.filter((x) => x.owner === s.user!.email).length}</div>
-          <Button variant="outline" onClick={() => { s.signOut(); toast.success("Signed out"); }}>Sign out</Button>
+          <Button variant="outline" onClick={async () => { await s.signOut(); toast.success("Signed out"); }}>Sign out</Button>
         </div>
       </div>
     );
 
   return (
     <div className="max-w-md">
-      <PageHeader title={mode === "in" ? "Sign in" : "Create account"} sub="Optional — save your scan history and research notes." />
-      <form className="panel space-y-4" onSubmit={(e) => {
+      <PageHeader title={mode === "in" ? "Sign in" : "Create account"} sub="Your account and activity are saved — sign in from any device." />
+      <form className="panel space-y-4" onSubmit={async (e) => {
         e.preventDefault();
         if (pw.length < 6) { toast.error("Password must be at least 6 characters."); return; }
-        const err = mode === "in" ? s.signIn(email, pw) : s.signUp(email, pw);
+        const err = mode === "in" ? await s.signIn(email, pw) : await s.signUp(email, pw);
+        if (err === "CONFIRM") { toast.success("Account created! Check your email to confirm, then sign in."); setMode("in"); return; }
         err ? toast.error(err) : toast.success("Welcome to Cerebruim");
       }}>
         <div className="space-y-1.5"><Label htmlFor="email">Email</Label><Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>

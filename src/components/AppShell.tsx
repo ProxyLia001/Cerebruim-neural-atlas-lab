@@ -63,9 +63,9 @@ function Sidebar({ onNav }: { onNav?: () => void }) {
 
       {!s.isPro && (
         <div className="mt-auto space-y-3">
-          <form className="space-y-2" onSubmit={(e) => {
+          <form className="space-y-2" onSubmit={async (e) => {
             e.preventDefault();
-            const err = s.redeem(code);
+            const err = await s.redeem(code);
             err ? toast.error(err) : (toast.success("Pro Tier unlocked!"), setCode(""));
           }}>
             <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Redeem gift code</div>
@@ -77,8 +77,15 @@ function Sidebar({ onNav }: { onNav?: () => void }) {
           <div className="rounded-lg bg-gradient-primary p-3 text-primary-foreground">
             <div className="text-sm font-semibold">Upgrade to Pro</div>
             <p className="mt-1 text-xs opacity-90">Unlimited scans and the Live EEG Stream.</p>
-            <a href="https://www.paypal.com" target="_blank" rel="noreferrer"
-              className="mt-2 inline-block rounded-md bg-background/90 px-3 py-1.5 text-xs font-semibold text-foreground">Pay with PayPal</a>
+            {s.payment && (
+              <div className="mt-2 space-y-1 rounded-md bg-background/90 p-2 text-xs text-foreground">
+                <div className="font-semibold">${s.payment.monthly_price}/month · ${s.payment.yearly_price}/year</div>
+                <div>Pay by bank transfer to:</div>
+                <div className="font-mono font-semibold">{s.payment.account_number}</div>
+                <div>{s.payment.bank_name} — {s.payment.account_name}</div>
+                <div className="opacity-70">After paying, send proof to get your Pro code.</div>
+              </div>
+            )}
           </div>
         </div>
       )}
