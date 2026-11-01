@@ -19,6 +19,8 @@ import { Route as LiveStreamRouteImport } from './routes/live-stream'
 import { Route as MelRouteImport } from './routes/mel'
 import { Route as UpgradeRouteImport } from './routes/upgrade'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiMelAiRouteImport } from './routes/api/mel-ai'
+import { Route as ApiScholarRouteImport } from './routes/api/scholar'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +72,16 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMelAiRoute = ApiMelAiRouteImport.update({
+  id: '/api/mel-ai',
+  path: '/api/mel-ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiScholarRoute = ApiScholarRouteImport.update({
+  id: '/api/scholar',
+  path: '/api/scholar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -82,6 +94,8 @@ export interface FileRoutesByFullPath {
   '/mel': typeof MelRoute
   '/upgrade': typeof UpgradeRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/mel-ai': typeof ApiMelAiRoute
+  '/api/scholar': typeof ApiScholarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +108,8 @@ export interface FileRoutesByTo {
   '/mel': typeof MelRoute
   '/upgrade': typeof UpgradeRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/mel-ai': typeof ApiMelAiRoute
+  '/api/scholar': typeof ApiScholarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +123,8 @@ export interface FileRoutesById {
   '/mel': typeof MelRoute
   '/upgrade': typeof UpgradeRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/mel-ai': typeof ApiMelAiRoute
+  '/api/scholar': typeof ApiScholarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +139,8 @@ export interface FileRouteTypes {
     | '/mel'
     | '/upgrade'
     | '/api/chat'
+    | '/api/mel-ai'
+    | '/api/scholar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +153,8 @@ export interface FileRouteTypes {
     | '/mel'
     | '/upgrade'
     | '/api/chat'
+    | '/api/mel-ai'
+    | '/api/scholar'
   id:
     | '__root__'
     | '/'
@@ -145,6 +167,8 @@ export interface FileRouteTypes {
     | '/mel'
     | '/upgrade'
     | '/api/chat'
+    | '/api/mel-ai'
+    | '/api/scholar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +182,8 @@ export interface RootRouteChildren {
   MelRoute: typeof MelRoute
   UpgradeRoute: typeof UpgradeRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiMelAiRoute: typeof ApiMelAiRoute
+  ApiScholarRoute: typeof ApiScholarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -232,6 +258,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/mel-ai': {
+      id: '/api/mel-ai'
+      path: '/api/mel-ai'
+      fullPath: '/api/mel-ai'
+      preLoaderRoute: typeof ApiMelAiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/scholar': {
+      id: '/api/scholar'
+      path: '/api/scholar'
+      fullPath: '/api/scholar'
+      preLoaderRoute: typeof ApiScholarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -246,6 +286,8 @@ const rootRouteChildren: RootRouteChildren = {
   MelRoute: MelRoute,
   UpgradeRoute: UpgradeRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiMelAiRoute: ApiMelAiRoute,
+  ApiScholarRoute: ApiScholarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
