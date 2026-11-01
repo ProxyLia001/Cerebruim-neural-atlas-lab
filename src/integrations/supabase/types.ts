@@ -38,6 +38,60 @@ export type Database = {
         }
         Relationships: []
       }
+      library_papers: {
+        Row: {
+          abstract: string | null
+          authors: Json | null
+          created_at: string | null
+          doi: string | null
+          id: string
+          is_preprint: boolean | null
+          journal: string | null
+          note: string | null
+          pdf_url: string | null
+          source: string | null
+          tags: string[] | null
+          title: string
+          url: string | null
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          abstract?: string | null
+          authors?: Json | null
+          created_at?: string | null
+          doi?: string | null
+          id?: string
+          is_preprint?: boolean | null
+          journal?: string | null
+          note?: string | null
+          pdf_url?: string | null
+          source?: string | null
+          tags?: string[] | null
+          title: string
+          url?: string | null
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          abstract?: string | null
+          authors?: Json | null
+          created_at?: string | null
+          doi?: string | null
+          id?: string
+          is_preprint?: boolean | null
+          journal?: string | null
+          note?: string | null
+          pdf_url?: string | null
+          source?: string | null
+          tags?: string[] | null
+          title?: string
+          url?: string | null
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: []
+      }
       notes: {
         Row: {
           created_at: string
