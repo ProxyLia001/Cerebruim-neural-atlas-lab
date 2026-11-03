@@ -5,20 +5,20 @@ import { createFileRoute } from "@tanstack/react-router";
 
 export type ScholarPaper = {
   id: string;
-  doi?: string;
+  doi?: string | undefined;
   title: string;
   authors: string[];
-  year?: number;
-  journal?: string;
-  abstract?: string;
-  url?: string;
-  pdfUrl?: string;
+  year?: number | undefined;
+  journal?: string | undefined;
+  abstract?: string | undefined;
+  url?: string | undefined;
+  pdfUrl?: string | undefined;
   source: string;
-  citations?: number;
-  isPreprint?: boolean;
-  isOpenAccess?: boolean;
-  fullText?: boolean;
-  pubType?: string;
+  citations?: number | undefined;
+  isPreprint?: boolean | undefined;
+  isOpenAccess?: boolean | undefined;
+  fullText?: boolean | undefined;
+  pubType?: string | undefined;
 };
 
 const UA = { "User-Agent": "Cerebruim-MEL/1.0 (research assistant; mailto:abigailjames8221@gmail.com)" };
@@ -163,13 +163,32 @@ async function lookupDoi(doi: string): Promise<ScholarPaper | null> {
   const r = await fetch(`https://api.openalex.org/works/doi:${encodeURIComponent(doi)}`, { headers: UA });
   if (r.ok) {
     const w = await r.json();
-    const p = await openAlex(`"${w.title}"`);
-    return p.find((x) => x.doi?.toLowerCase() === doi.toLowerCase()) ?? p[0] ?? null;
+    const oa = w.open_access as { is_oa?: boolean; oa_url?: string } | undefined;
+    const loc = w.primary_location as { landing_page_url?: string; pdf_url?: string; source?: { display_name?: string } } | undefined;
+    const best = w.best_oa_location as { pdf_url?: string } | undefined;
+    return {
+      id: String(w.id ?? doi),
+      doi: typeof w.doi === "string" ? (w.doi as string).replace("https://doi.org/", "") : doi,
+      title: String(w.title ?? "Untitled"),
+      authors: ((w.authorships as { author?: { display_name?: string } }[] | undefined) ?? [])
+        .map((a) => a.author?.display_name ?? "").filter(Boolean).slice(0, 12),
+      year: (w.publication_year as number | undefined) ?? undefined,
+      journal: loc?.source?.display_name,
+      abstract: invIndex(w.abstract_inverted_index as Record<string, number[]> | undefined) || undefined,
+      url: loc?.landing_page_url ?? `https://doi.org/${doi}`,
+      pdfUrl: best?.pdf_url ?? loc?.pdf_url ?? oa?.oa_url,
+      source: "OpenAlex",
+      citations: (w.cited_by_count as number | undefined) ?? 0,
+      isPreprint: w.type === "preprint",
+      isOpenAccess: !!oa?.is_oa,
+      fullText: !!(best?.pdf_url ?? loc?.pdf_url),
+      pubType: String(w.type ?? ""),
+    };
   }
   const c = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, { headers: UA });
   if (!c.ok) return null;
   const w = (await c.json()).message;
-  const parts = w.published?.["date-parts"];
+  const parts = w.published?.["date-parts"] as number[][] | undefined;
   return {
     id: `cr:${w.DOI}`, doi: w.DOI, title: (w.title ?? ["Untitled"])[0],
     authors: (w.author ?? []).map((a: { given?: string; family?: string }) => [a.given, a.family].filter(Boolean).join(" ")).slice(0, 12),
