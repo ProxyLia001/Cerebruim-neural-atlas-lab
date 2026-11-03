@@ -73,7 +73,7 @@ export function cite(p: ScholarPaper, style: string): string {
 // ---------- Exporters ----------
 export function toBibTeX(papers: ScholarPaper[]): string {
   return papers.map((p) => {
-    const key = `${surname(p.authors?.[0] ?? "anon").toLowerCase()}${p.year ?? ""}${(p.title.split(/\s+/)[0] ?? "").toLowerCase()}`;
+    const key = `${surname(p.authors?.[0] ?? "anon").toLowerCase()}${p.year ?? ""}${(p.title.split(/\s+/)[0] ?? "paper").toLowerCase()}`;
     const fields = [
       `  title = {${p.title}}`,
       `  author = {${(p.authors ?? []).join(" and ")}}`,
