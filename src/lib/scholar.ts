@@ -42,14 +42,15 @@ export async function melAI(body: {
 }
 
 // ---------- Citation formatters ----------
-const surname = (a: string) => {
+const surname = (a: string): string => {
   const parts = a.trim().split(/\s+/);
-  return parts.length > 1 ? parts[parts.length - 1] : a;
+  return (parts.length > 1 ? parts[parts.length - 1] : a) ?? a;
 };
-const initials = (a: string) => {
+const initials = (a: string): string => {
   const parts = a.trim().split(/\s+/);
+  const last = parts[parts.length - 1] ?? a;
   if (parts.length < 2) return a;
-  return `${parts[parts.length - 1]}, ${parts.slice(0, -1).map((p) => p[0]?.toUpperCase() + ".").join(" ")}`;
+  return `${last}, ${parts.slice(0, -1).map((p) => (p[0] ?? "").toUpperCase() + ".").join(" ")}`;
 };
 
 export function cite(p: ScholarPaper, style: string): string {
