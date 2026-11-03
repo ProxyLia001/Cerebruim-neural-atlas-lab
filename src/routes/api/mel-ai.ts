@@ -64,7 +64,16 @@ export const Route = createFileRoute("/api/mel-ai")({
     handlers: {
       POST: async ({ request }) => {
         const key = process.env["LOVABLE_API_KEY"];
-        if (!key) return new Response("AI is not configured.", { status: 500 });
+        if (!key) {
+          // Self-hosted copies (e.g. Cloudflare Pages) have no AI key — proxy to the main deployment.
+          const upstream = await fetch("https://neural-atlas-lab.lovable.app/api/mel-ai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: await request.text(),
+            signal: request.signal,
+          });
+          return new Response(upstream.body, { status: upstream.status, headers: { "Content-Type": upstream.headers.get("Content-Type") ?? "text/plain" } });
+        }
         const body = (await request.json()) as Body;
         const mode = PROMPTS[body.mode] ? body.mode : "chat";
 
@@ -94,7 +103,7 @@ export const Route = createFileRoute("/api/mel-ai")({
 
         const result = streamText({
           model: openai.responses("openai/gpt-6-astra"),
-          system: PROMPTS[mode],
+          system: PROMPTS[mode] ?? "",
           messages: [{ role: "user", content: userContent }],
           maxRetries: 0,
           abortSignal: request.signal,

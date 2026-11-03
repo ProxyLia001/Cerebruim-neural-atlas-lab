@@ -15,12 +15,12 @@ export async function searchScholar(params: {
 
 export async function melAI(body: {
   mode: "analyze" | "compare" | "gaps" | "write" | "chat";
-  question?: string;
-  papers?: ScholarPaper[];
-  draftType?: string;
-  citationStyle?: string;
-  userNotes?: string;
-  pdf?: { name: string; dataUrl: string };
+  question?: string | undefined;
+  papers?: ScholarPaper[] | undefined;
+  draftType?: string | undefined;
+  citationStyle?: string | undefined;
+  userNotes?: string | undefined;
+  pdf?: { name: string; dataUrl: string } | undefined;
   onChunk: (text: string) => void;
 }): Promise<string> {
   const r = await fetch("/api/mel-ai", {
@@ -42,14 +42,15 @@ export async function melAI(body: {
 }
 
 // ---------- Citation formatters ----------
-const surname = (a: string) => {
+const surname = (a: string): string => {
   const parts = a.trim().split(/\s+/);
-  return parts.length > 1 ? parts[parts.length - 1] : a;
+  return (parts.length > 1 ? parts[parts.length - 1] : a) ?? a;
 };
-const initials = (a: string) => {
+const initials = (a: string): string => {
   const parts = a.trim().split(/\s+/);
+  const last = parts[parts.length - 1] ?? a;
   if (parts.length < 2) return a;
-  return `${parts[parts.length - 1]}, ${parts.slice(0, -1).map((p) => p[0]?.toUpperCase() + ".").join(" ")}`;
+  return `${last}, ${parts.slice(0, -1).map((p) => (p[0] ?? "").toUpperCase() + ".").join(" ")}`;
 };
 
 export function cite(p: ScholarPaper, style: string): string {
@@ -73,7 +74,7 @@ export function cite(p: ScholarPaper, style: string): string {
 // ---------- Exporters ----------
 export function toBibTeX(papers: ScholarPaper[]): string {
   return papers.map((p) => {
-    const key = `${surname(p.authors?.[0] ?? "anon").toLowerCase()}${p.year ?? ""}${(p.title.split(/\s+/)[0] ?? "").toLowerCase()}`;
+    const key = `${surname(p.authors?.[0] ?? "anon").toLowerCase()}${p.year ?? ""}${(p.title.split(/\s+/)[0] ?? "paper").toLowerCase()}`;
     const fields = [
       `  title = {${p.title}}`,
       `  author = {${(p.authors ?? []).join(" and ")}}`,
