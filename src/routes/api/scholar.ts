@@ -139,7 +139,7 @@ async function arxiv(q: string): Promise<ScholarPaper[]> {
   return entries.map((e): ScholarPaper => {
     const grab = (tag: string) => (e.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`))?.[1] ?? "").trim();
     const id = grab("id");
-    const authors = [...e.matchAll(/<author>\s*<name>([\s\S]*?)<\/name>/g)].map((m) => m[1].trim()).slice(0, 12);
+    const authors = [...e.matchAll(/<author>\s*<name>([\s\S]*?)<\/name>/g)].map((m) => (m[1] ?? "").trim()).slice(0, 12);
     const published = grab("published");
     return {
       id: `arxiv:${id}`,
