@@ -15,12 +15,12 @@ export async function searchScholar(params: {
 
 export async function melAI(body: {
   mode: "analyze" | "compare" | "gaps" | "write" | "chat";
-  question?: string;
-  papers?: ScholarPaper[];
-  draftType?: string;
-  citationStyle?: string;
-  userNotes?: string;
-  pdf?: { name: string; dataUrl: string };
+  question?: string | undefined;
+  papers?: ScholarPaper[] | undefined;
+  draftType?: string | undefined;
+  citationStyle?: string | undefined;
+  userNotes?: string | undefined;
+  pdf?: { name: string; dataUrl: string } | undefined;
   onChunk: (text: string) => void;
 }): Promise<string> {
   const r = await fetch("/api/mel-ai", {
