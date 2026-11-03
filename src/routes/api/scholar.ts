@@ -84,7 +84,7 @@ async function crossref(q: string, yf?: string, yt?: string): Promise<ScholarPap
     return {
       id: `cr:${String(w["DOI"] ?? Math.random())}`,
       doi: w["DOI"] as string | undefined,
-      title: ((w["title"] as string[] | undefined) ?? ["Untitled"])[0],
+      title: ((w["title"] as string[] | undefined) ?? ["Untitled"])[0] ?? "Untitled",
       authors: ((w["author"] as { given?: string; family?: string }[] | undefined) ?? [])
         .map((a) => [a.given, a.family].filter(Boolean).join(" ")).filter(Boolean).slice(0, 12),
       year: parts?.[0]?.[0],
@@ -229,7 +229,8 @@ export const Route = createFileRoute("/api/scholar")({
           for (const s of settled) {
             if (s.status === "fulfilled" && s.value.length) {
               all.push(...s.value);
-              if (!sources.includes(s.value[0].source)) sources.push(s.value[0].source);
+              const src = s.value[0]?.source;
+              if (src && !sources.includes(src)) sources.push(src);
             }
           }
           // Dedupe by DOI, then by normalized title
