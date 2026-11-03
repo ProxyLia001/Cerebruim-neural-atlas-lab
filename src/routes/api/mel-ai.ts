@@ -94,7 +94,7 @@ export const Route = createFileRoute("/api/mel-ai")({
 
         const result = streamText({
           model: openai.responses("openai/gpt-6-astra"),
-          system: PROMPTS[mode],
+          system: PROMPTS[mode] ?? PROMPTS["chat"],
           messages: [{ role: "user", content: userContent }],
           maxRetries: 0,
           abortSignal: request.signal,
