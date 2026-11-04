@@ -11,3 +11,4 @@
 - App data (users, roles, gift codes, scans, notes) lives in src/lib/store.tsx via localStorage — demo-only until Lovable Cloud is enabled; swap the store for real auth/DB then.
 - Eric chat streams from the server route src/routes/api/chat.ts through the Lovable AI Gateway; chat history is one conversation kept in browser localStorage.
 - App data (accounts, roles, gift codes, scans, notes, payment details) lives in Lovable Cloud via src/lib/store.tsx; only guest (signed-out) activity stays in localStorage. Why: accounts must survive reinstalls and devices.
+- AI routes (src/routes/api/chat.ts, mel-ai.ts) proxy to https://neural-atlas-lab.lovable.app when LOVABLE_API_KEY is absent, so self-hosted copies (Cloudflare Pages) keep AI working. Why: the AI key is Lovable-managed and cannot be exported to third-party hosting.
