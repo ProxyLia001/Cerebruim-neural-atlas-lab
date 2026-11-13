@@ -6,3 +6,6 @@
 - [x] Fix "AI is not configured" on Cloudflare (AI routes now proxy to the main app when no key exists)
 - [x] Verified: all pages, Eric AI, paper search, DOI lookup, AI compare — live on neural-atlas-lab.lovable.app
 - [ ] Cloudflare copy still on old build — waiting for GitHub sync to trigger its rebuild (user to check Deployments tab)
+- [ ] Diagnose Cloudflare Eric AI configuration error and verify chat end-to-end
+- [ ] Make uploaded supported scan data feed real, transparent diagnostic analysis
+- [ ] Verify GitHub sync and Cloudflare deployment status; report any user-controlled access needed
