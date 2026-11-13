@@ -1,6 +1,6 @@
 Neural Atlas Lab
 
-Create a clean, responsive, high-performance web application built completely in Python using Streamlit for an advanced neuroscience research and diagnostic platform named "Cerebruim".
+Create a clean, responsive, high-performance web application built completely in Python using Streamlit for an advanced neuroscience research and diagnostic platform named "Cerebruim"..
 
 🛠️ TECH STACK & ARCHITECTURE CONSTRAINTS
 
